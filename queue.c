@@ -5,6 +5,8 @@
 #include "harness.h"
 #include "queue.h"
 
+static element_t *new_element(char *s);
+
 /* Notice: sometimes, Cppcheck would find the potential NULL pointer bugs,
  * but some of them cannot occur. You can suppress them by adding the
  * following line.
@@ -34,6 +36,26 @@ void q_free(struct list_head *l)
     }
 }
 
+/* Attempt to new element.
+ * Return element if successful.
+ * Return NULL if could not allocate space or duplicate s fail.
+ */
+static element_t *new_element(char *s)
+{
+    element_t *node = malloc(sizeof(element_t));
+    if (!node) {
+        return NULL;
+    }
+
+    node->value = strdup(s);
+    if (!node->value) {
+        free(node);
+        return NULL;
+    }
+    return node;
+}
+
+
 /* Attempt to insert element at head of queue.
  * Return true if successful.
  * Return false if q is NULL or could not allocate space.
@@ -46,14 +68,8 @@ bool q_insert_head(struct list_head *head, char *s)
         return false;
     }
 
-    element_t *node = malloc(sizeof(element_t));
+    element_t *node = new_element(s);
     if (!node) {
-        return false;
-    }
-
-    node->value = strdup(s);
-    if (!node->value) {
-        free(node);
         return false;
     }
 
