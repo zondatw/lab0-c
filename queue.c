@@ -138,7 +138,22 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
  */
 element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
 {
-    return NULL;
+    if (!head || list_empty(head)) {
+        return NULL;
+    }
+
+    element_t *node = list_last_entry(head, element_t, list);
+    if (!node) {
+        return NULL;
+    }
+
+    list_del(head->prev);
+
+    if (sp) {
+        strncpy(sp, node->value, bufsize - 1);
+        sp[bufsize - 1] = '\0';
+    }
+    return node;
 }
 
 /* WARN: This is for external usage, don't modify it
