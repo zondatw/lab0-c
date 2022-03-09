@@ -170,7 +170,13 @@ void q_release_element(element_t *e)
  */
 int q_size(struct list_head *head)
 {
-    return -1;
+    int count = 0;
+    if (head) {
+        struct list_head *n;
+        list_for_each (n, head)
+            count++;
+    }
+    return count;
 }
 
 /* Delete the middle node in list.
